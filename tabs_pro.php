@@ -1,12 +1,12 @@
 <?php
 global $user_ID;
 global $pts_settings0;
-global $wpdb;
+global $whatsappdb;
 $sql = "SELECT text FROM auto_messages WHERE type='general' and step=2";
-$reply_row = $wpdb->get_row($sql);
+$reply_row = $whatsappdb->get_row($sql);
 $status_message = $reply_row->text;
 $sql = "SELECT text FROM auto_messages WHERE type='general' and step=3";
-$reply_row = $wpdb->get_row($sql);
+$reply_row = $whatsappdb->get_row($sql);
 $credit_message = $reply_row->text;
 
 if ($user_ID == 0) {

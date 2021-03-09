@@ -41,27 +41,27 @@ global $user_ID;
 if (!$user_ID)
     return;
 
-global $wpdb;
+global $whatsappdb;
 
 $sql="SELECT berater_status from pts_useradressen WHERE ID=".$user_ID;
-$consultant_status = $wpdb->get_row($sql);
+$consultant_status = $whatsappdb->get_row($sql);
 if ($consultant_status->berater_status!='on')
     return;
 
 $sql="SELECT * from cockpit_settings WHERE consultant_id=".$user_ID;
-$setting = $wpdb->get_row($sql);
+$setting = $whatsappdb->get_row($sql);
 
 if (!$setting){
     $sql = "INSERT INTO cockpit_settings (consultant_id) VALUES (" . $user_ID . ")";
-    $wpdb->query($sql);
+    $whatsappdb->query($sql);
     $sql="SELECT * from cockpit_settings WHERE consultant_id=".$user_ID;
-    $setting = $wpdb->get_row($sql);
+    $setting = $whatsappdb->get_row($sql);
 }
 $sql = "SELECT LAMOGA_WAF_request.*,pts_useradressen.user_login,pts_useradressen.telefon_mobil FROM LAMOGA_WAF_request INNER JOIN pts_useradressen on LAMOGA_WAF_request.user_id=pts_useradressen.ID WHERE status>-1  and customer_phone!='null' and consultant_id=".$user_ID." ORDER BY LAMOGA_WAF_request.requested_time";
-$result = $wpdb->get_results($sql);
+$result = $whatsappdb->get_results($sql);
 
 $sql="SELECT text from auto_messages WHERE name='activate'";
-$activeMessages = $wpdb->get_results($sql);
+$activeMessages = $whatsappdb->get_results($sql);
 ?>
 
 <div class="setting" style="font-size: 20px">
