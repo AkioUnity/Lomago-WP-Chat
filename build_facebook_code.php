@@ -1,5 +1,5 @@
 <?php
-$facebookapp_code = "<h4>per Facebook APP : <img src='wp-content/uploads/2019/04/facebook.png'";
+$facebookapp_code = "<h4>per Facebook APP : <img src='\pts_bilderupload/facebook.png'";
 if ($user_ID == 0)
     $facebookapp_code .= " class='button_disabled'";
 else

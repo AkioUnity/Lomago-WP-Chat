@@ -2,9 +2,9 @@
     function call_whatsapp(id, name,sbid,mobilenumber_1,price) { alert ("CREDIT "+kontostand+ "  STATUS ");
         console.log("whatsapp " + id + ":" + name);
         jQuery(".whatsapp_loading").show();
-        let ajaxscript = {ajax_url: '//www.lamoga.de/wp-admin/admin-ajax.php'};
+        let ajax_url ="<?php echo admin_url('admin-ajax.php'); ?>";
         jQuery.post(
-            ajaxscript.ajax_url,
+            ajax_url,
             {
                 action: "whatsapp_request",
                 consultant_id: id,

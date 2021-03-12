@@ -1,5 +1,5 @@
 <?php
-$telegram_code = "<h4>per Telegram APP : <img src='wp-content/uploads/2019/04/telegram.png'";
+$telegram_code = "<h4>per Telegram APP : <img src='\pts_bilderupload/telegram.png'";
 if ($user_ID == 0)
     $telegram_code .= " class='button_disabled'";
 else
