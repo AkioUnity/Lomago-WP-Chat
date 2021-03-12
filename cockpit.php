@@ -42,25 +42,26 @@ if (!$user_ID)
     return;
 
 global $whatsappdb;
+global $wa_portal_id;
 
-$sql="SELECT berater_status from pts_useradressen WHERE ID=".$user_ID;
+$sql="SELECT berater_status from pts_useradressen_".$wa_portal_id." WHERE ID=".$user_ID;
 $consultant_status = $whatsappdb->get_row($sql);
 if ($consultant_status->berater_status!='on')
     return;
 
-$sql="SELECT * from cockpit_settings WHERE consultant_id=".$user_ID;
+$sql="SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=".$user_ID;
 $setting = $whatsappdb->get_row($sql);
 
 if (!$setting){
-    $sql = "INSERT INTO cockpit_settings (consultant_id) VALUES (" . $user_ID . ")";
+    $sql = "INSERT INTO cockpit_settings_".$wa_portal_id." (consultant_id) VALUES (" . $user_ID . ")";
     $whatsappdb->query($sql);
-    $sql="SELECT * from cockpit_settings WHERE consultant_id=".$user_ID;
+    $sql="SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=".$user_ID;
     $setting = $whatsappdb->get_row($sql);
 }
-$sql = "SELECT LAMOGA_WAF_request.*,pts_useradressen.user_login,pts_useradressen.telefon_mobil FROM LAMOGA_WAF_request INNER JOIN pts_useradressen on LAMOGA_WAF_request.user_id=pts_useradressen.ID WHERE status>-1  and customer_phone!='null' and consultant_id=".$user_ID." ORDER BY LAMOGA_WAF_request.requested_time";
+$sql = "SELECT LAMOGA_WAF_request_".$wa_portal_id.".*,pts_useradressen_".$wa_portal_id.".user_login,pts_useradressen_".$wa_portal_id.".telefon_mobil FROM LAMOGA_WAF_request_".$wa_portal_id." INNER JOIN pts_useradressen_".$wa_portal_id." on LAMOGA_WAF_request_".$wa_portal_id.".user_id=pts_useradressen_".$wa_portal_id.".ID WHERE status>-1  and customer_phone!='null' and consultant_id=".$user_ID." ORDER BY LAMOGA_WAF_request_".$wa_portal_id.".requested_time";
 $result = $whatsappdb->get_results($sql);
 
-$sql="SELECT text from auto_messages WHERE name='activate'";
+$sql="SELECT text from auto_messages_".$wa_portal_id." WHERE name='activate'";
 $activeMessages = $whatsappdb->get_results($sql);
 ?>
 

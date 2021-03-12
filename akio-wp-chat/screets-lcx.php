@@ -5,14 +5,15 @@ function users_last_login()
 //    $cur_login = current_time(timestamp, 0);
     $userinfo = wp_get_current_user();
     global $whatsappdb;
-    $sql = "SELECT consultant_id from LAMOGA_WAF_request WHERE status>-1 and user_id=" . $userinfo->ID;
+    global $wa_portal_id;
+    $sql = "SELECT consultant_id from LAMOGA_WAF_request_".$wa_portal_id." WHERE status>-1 and user_id=" . $userinfo->ID;
     $results = $whatsappdb->get_results($sql);
     foreach ($results as $result) {
         $consultant_id = $result->consultant_id;
-        $sql = "SELECT * from cockpit_settings WHERE consultant_id=" . $consultant_id;
+        $sql = "SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=" . $consultant_id;
         $setting = $whatsappdb->get_row($sql);
         if ($setting && $setting->offline == 1) {
-            $sql = "UPDATE LAMOGA_WAF_request SET status=-1 WHERE user_id=" . $userinfo->ID . " and consultant_id=" . $consultant_id;
+            $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET status=-1 WHERE user_id=" . $userinfo->ID . " and consultant_id=" . $consultant_id;
             $whatsappdb->query($sql);
         }
     }
@@ -28,12 +29,13 @@ function cockpit_action()
     $offline = $_POST['offline'];
     $wait_minute = $_POST['wait_minute'];
     global $whatsappdb;
+    global $wa_portal_id;
     $userinfo = wp_get_current_user();
-    $sql = "UPDATE cockpit_settings SET offline=" . $offline . ",wait_minute=" . $wait_minute . " WHERE consultant_id=" . $userinfo->ID;
+    $sql = "UPDATE cockpit_settings_".$wa_portal_id." SET offline=" . $offline . ",wait_minute=" . $wait_minute . " WHERE consultant_id=" . $userinfo->ID;
     $whatsappdb->query($sql);
-    $sql = "UPDATE LAMOGA_WAF_request SET status=-1 WHERE requested_time < (NOW() - INTERVAL " . $wait_minute . " MINUTE);";
+    $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET status=-1 WHERE requested_time < (NOW() - INTERVAL " . $wait_minute . " MINUTE);";
     $deleteRes = $whatsappdb->query($sql);
-    $sql = "SELECT LAMOGA_WAF_request.*,pts_useradressen.user_login,pts_useradressen.telefon_mobil,pts_useradressen.vorwahl_1,pts_useradressen.rufnummer_3 FROM LAMOGA_WAF_request INNER JOIN pts_useradressen on LAMOGA_WAF_request.user_id=pts_useradressen.ID WHERE status>-1 and customer_phone!='null' and consultant_id=" . $userinfo->ID . " ORDER BY LAMOGA_WAF_request.requested_time";
+    $sql = "SELECT LAMOGA_WAF_request_".$wa_portal_id.".*,pts_useradressen_".$wa_portal_id.".user_login,pts_useradressen_".$wa_portal_id.".telefon_mobil,pts_useradressen_".$wa_portal_id.".vorwahl_1,pts_useradressen_".$wa_portal_id.".rufnummer_3 FROM LAMOGA_WAF_request_".$wa_portal_id." INNER JOIN pts_useradressen_".$wa_portal_id." on LAMOGA_WAF_request_".$wa_portal_id.".user_id=pts_useradressen_".$wa_portal_id.".ID WHERE status>-1 and customer_phone!='null' and consultant_id=" . $userinfo->ID . " ORDER BY LAMOGA_WAF_request_".$wa_portal_id.".requested_time";
     $result = $whatsappdb->get_results($sql);
     echo wp_send_json($result);
     die(); // this is required to terminate immediately and return a proper response
@@ -45,7 +47,8 @@ add_action('wp_ajax_nopriv_cockpit_request', 'cockpit_request');
 function cockpit_request()
 {
     global $whatsappdb;
-    $sql = "SELECT count(*) as count FROM LAMOGA_WAF_request INNER JOIN pts_useradressen on LAMOGA_WAF_request.user_id=pts_useradressen.ID WHERE status>-1 ORDER BY LAMOGA_WAF_request.requested_time";
+    global $wa_portal_id;
+    $sql = "SELECT count(*) as count FROM LAMOGA_WAF_request_".$wa_portal_id." INNER JOIN pts_useradressen_".$wa_portal_id." on LAMOGA_WAF_request_".$wa_portal_id.".user_id=pts_useradressen_".$wa_portal_id.".ID WHERE status>-1 ORDER BY LAMOGA_WAF_request_".$wa_portal_id.".requested_time";
     $result = $whatsappdb->get_row($sql);
     echo wp_send_json($result);
     die(); // this is required to terminate immediately and return a proper response
@@ -58,7 +61,8 @@ function cockpit_connect()
 {
     $user_id = $_POST['user_id'];
     global $whatsappdb;
-    $sql = "UPDATE LAMOGA_WAF_request SET status='1' WHERE user_id=" . $user_id;
+    global $wa_portal_id;
+    $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET status='1' WHERE user_id=" . $user_id;
     $result = wp_send_json($whatsappdb->get_results($sql));
     echo $result;
     die(); // this is required to terminate immediately and return a proper response
@@ -77,6 +81,7 @@ function whatsapp_request()
     $type = isset($_POST['type']) ? $_POST['type'] : 'whatsapp';
 
     global $whatsappdb;
+    global $wa_portal_id;
     $userinfo = wp_get_current_user();
     $user_ID = $userinfo->ID;
 
@@ -91,11 +96,11 @@ function whatsapp_request()
     }
 
 
-    $sql = "SELECT user_login,telefon_mobil,vorwahl_1,rufnummer_3,telegram_id from pts_useradressen where ID=" . $user_ID;
+    $sql = "SELECT user_login,telefon_mobil,vorwahl_1,rufnummer_3,telegram_id from pts_useradressen_".$wa_portal_id." where ID=" . $user_ID;
     $row = $whatsappdb->get_row($sql);
     $username = $row->user_login;
 
-    $sql = "SELECT text FROM auto_messages WHERE type='" . $type . "' and step=1";
+    $sql = "SELECT text FROM auto_messages_".$wa_portal_id." WHERE type='" . $type . "' and step=1";
     $reply_row = $whatsappdb->get_row($sql);
     $message = $reply_row->text;
 
@@ -127,12 +132,12 @@ function whatsapp_request()
 
     $res['message'] = $message;
 
-    $sql = "SELECT * FROM LAMOGA_WAF_request WHERE user_id=" . $user_ID . " and type='" . $type . "'";
+    $sql = "SELECT * FROM LAMOGA_WAF_request_".$wa_portal_id." WHERE user_id=" . $user_ID . " and type='" . $type . "'";
     $results = $whatsappdb->get_results($sql);
     if (count($results) > 0) {
-        $sql = "UPDATE LAMOGA_WAF_request SET requested_time=(now()),consultant_id=" . $consultant_id . ",consultant_name='" . $consultant_name . "',customer_phone='" . $phone . "',consultant_phone='" . $consultant_phone . "',sbid='" . $sbid . "',status='0' WHERE user_id=" . $user_ID . " and type='" . $type . "'";
+        $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET requested_time=(now()),consultant_id=" . $consultant_id . ",consultant_name='" . $consultant_name . "',customer_phone='" . $phone . "',consultant_phone='" . $consultant_phone . "',sbid='" . $sbid . "',status='0' WHERE user_id=" . $user_ID . " and type='" . $type . "'";
     } else {
-        $sql = "INSERT INTO LAMOGA_WAF_request (consultant_id,user_id,type,requested_time,consultant_name,customer_phone,sbid,consultant_phone) VALUES (" . $consultant_id . "," . $user_ID . ",'" . $type . "',now(),'" . $consultant_name . "','" . $phone . "','" . $sbid . "','" . $consultant_phone . "')";
+        $sql = "INSERT INTO LAMOGA_WAF_request_".$wa_portal_id." (consultant_id,user_id,type,requested_time,consultant_name,customer_phone,sbid,consultant_phone) VALUES (" . $consultant_id . "," . $user_ID . ",'" . $type . "',now(),'" . $consultant_name . "','" . $phone . "','" . $sbid . "','" . $consultant_phone . "')";
     }
     $whatsappdb->query($sql);
     $result = wp_send_json($res);
@@ -188,5 +193,3 @@ function login_api()
     echo wp_send_json($user);
     die();
 }
-
-?>

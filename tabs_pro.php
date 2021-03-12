@@ -2,10 +2,11 @@
 global $user_ID;
 global $pts_settings0;
 global $whatsappdb;
-$sql = "SELECT text FROM auto_messages WHERE type='general' and step=2";
+global $wa_portal_id;
+$sql = "SELECT text FROM auto_messages_".$wa_portal_id." WHERE type='general' and step=2";
 $reply_row = $whatsappdb->get_row($sql);
 $status_message = $reply_row->text;
-$sql = "SELECT text FROM auto_messages WHERE type='general' and step=3";
+$sql = "SELECT text FROM auto_messages_".$wa_portal_id." WHERE type='general' and step=3";
 $reply_row = $whatsappdb->get_row($sql);
 $credit_message = $reply_row->text;
 
