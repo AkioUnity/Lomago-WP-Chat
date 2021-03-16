@@ -16,6 +16,9 @@ if ($user_ID == 0) {
         Für diese Funktion muss man angemeldet sein
     </h4>
 <?php } ?>
+<h4 style="color:#ae0303" class="check_message">
+    Diese Funktion ist noch nicht freigeschaltet (Code 100)
+</h4>
 <h4 style="color:#ae0303" class="status_message">
     <?php echo $status_message ?>
 </h4>

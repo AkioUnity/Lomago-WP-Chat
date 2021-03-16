@@ -4,6 +4,7 @@ global $pts_settings0;
 
 <script>
     let credit_setting="<?php echo $pts_settings0['chatanfrage_mindestguthaben'];?>";
+    let isChecked=false;
     setInterval(function(){
         jQuery(".status_message").hide();
         jQuery(".credit_message").hide();
@@ -20,7 +21,25 @@ global $pts_settings0;
             jQuery(".status_message").show();
             jQuery(".whatsapp-button").addClass('button_disabled');
         }
+        if (!isChecked)
+            jQuery(".whatsapp-button").addClass('button_disabled');
     }, 3000);
+
+    jQuery(document).ready(function($){
+        // now you can use jQuery code here with $ shortcut formatting
+        // this will execute after the document is fully loaded
+        // anything that interacts with your html should go here
+        let url = 'https://www.lomago.io/whatsapp/api/wp/check';
+        console.log(url);
+        jQuery.get(url,
+            function (response) {
+                console.log(response);
+                if (response.whatsapp==1){
+                    jQuery(".check_message").hide();
+                    isChecked=true;
+                }
+            });
+    });
 
 </script>
 

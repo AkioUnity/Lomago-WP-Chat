@@ -36,4 +36,5 @@
             setTimeout(function(){call_bot(data)}, 3000);
         }
     }
+
 </script>
