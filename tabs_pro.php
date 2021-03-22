@@ -25,6 +25,6 @@ if ($user_ID == 0) {
 <h4 style="color:#ae0303" class="credit_message">
     <?php echo $credit_message ?>
 </h4>
-<h3>Kontaktanfrage starten</h3>
+<h3>Chat starten</h3>
 
 
