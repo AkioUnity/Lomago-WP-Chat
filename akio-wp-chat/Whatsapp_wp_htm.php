@@ -7,9 +7,9 @@
     </tbody>
 </table>
 <div class="chat_info" style="padding-left: 10px">
-<!--    Kontostand: *KONTOSTAND*-->
-<!--    <br>-->
-<!--    Status:*BERATERSTATUS*-->
+    <!--    Kontostand: *KONTOSTAND*-->
+    <!--    <br>-->
+    <!--    Status:*BERATERSTATUS*-->
     <p>*WHATSAPP*</p>
     <p>[xyz-ips snippet="Messenger-TAB-Whatsapp"]</p>
     <p>&nbsp;</p>
