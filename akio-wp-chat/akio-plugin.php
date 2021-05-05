@@ -93,6 +93,20 @@ function cockpit_connect()
     die(); // this is required to terminate immediately and return a proper response
 }
 
+add_action('wp_ajax_cockpit_disconnect', 'cockpit_disconnect');
+add_action('wp_ajax_nopriv_cockpit_disconnect', 'cockpit_disconnect');
+
+function cockpit_disconnect()
+{
+	$id = $_POST['id'];
+	global $whatsappdb;
+	global $wa_portal_id;
+	$sql = "Delete From LAMOGA_WAF_request_".$wa_portal_id." WHERE id=" . $id;
+	$result = wp_send_json($whatsappdb->get_results($sql));
+	echo $result;
+	die(); // this is required to terminate immediately and return a proper response
+}
+
 add_action('wp_ajax_whatsapp_request', 'whatsapp_request');
 add_action('wp_ajax_nopriv_whatsapp_request', 'whatsapp_request');
 
@@ -160,7 +174,12 @@ function whatsapp_request()
     $sql = "SELECT * FROM LAMOGA_WAF_request_".$wa_portal_id." WHERE user_id=" . $user_ID . " and type='" . $type . "'";
     $results = $whatsappdb->get_results($sql);
     if (count($results) > 0) {
-        $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET requested_time=(now()),consultant_id=" . $consultant_id . ",consultant_name='" . $consultant_name . "',customer_phone='" . $phone . "',consultant_phone='" . $consultant_phone . "',sbid='" . $sbid . "',status='0' WHERE user_id=" . $user_ID . " and type='" . $type . "'";
+	    $res['message'] = 'Es besteht schon eine aktive '.$type." Verbindung.<br><br>Eine Übersicht befindet sich im <a href=\"/cockpit\">Cockpit</a>";
+	    $res['error'] = true;
+	    $result = wp_send_json($res);
+	    echo $result;
+	    die(); // this is required to terminate immediately and return a proper response
+//        $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET requested_time=(now()),consultant_id=" . $consultant_id . ",consultant_name='" . $consultant_name . "',customer_phone='" . $phone . "',consultant_phone='" . $consultant_phone . "',sbid='" . $sbid . "',status='0' WHERE user_id=" . $user_ID . " and type='" . $type . "'";
     } else {
         $sql = "INSERT INTO LAMOGA_WAF_request_".$wa_portal_id." (consultant_id,user_id,type,requested_time,consultant_name,customer_phone,sbid,consultant_phone) VALUES (" . $consultant_id . "," . $user_ID . ",'" . $type . "',now(),'" . $consultant_name . "','" . $phone . "','" . $sbid . "','" . $consultant_phone . "')";
     }

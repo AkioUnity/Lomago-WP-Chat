@@ -46,8 +46,72 @@ global $wa_portal_id;
 
 $sql="SELECT berater_status from pts_useradressen_".$wa_portal_id." WHERE ID=".$user_ID;
 $consultant_status = $whatsappdb->get_row($sql);
-if ($consultant_status->berater_status!='on')
-    return;
+if ($consultant_status->berater_status!='on'){ //customers
+	$sql = "SELECT * FROM LAMOGA_WAF_request_".$wa_portal_id." WHERE user_id=".$user_ID;
+	$result = $whatsappdb->get_results($sql);
+?>
+<h4>Meine aktiven Messenger Sitzungen</h4>
+
+<table id="connectionTable" style="font-size: 18px;font-weight:600 ">
+    <tr>
+        <th>Beratername</th>
+<!--        Start time-->
+<!--        <th>Startzeit</th>-->
+<!--        Request time-->
+        <th>angeforderte Zeit</th>
+<!--        Start messages sent-->
+<!--        <th>Startmessages gesendet</th>-->
+        <th>Messenger</th>
+        <th>Messenger PIN</th>
+<!--        disconnect-->
+        <th>Status</th>
+        <th>Aktion</th>
+    </tr>
+	<?php foreach ($result as $results) { ?>
+        <tr class='clickable-row' data-id='<?php echo $results->id; ?>'>
+            <td class="username1"><?php echo $results->consultant_name ?></td>
+            <td class="time1"><?php echo $results->requested_time ?></td>
+            <td><?php echo $results->type ?></td>
+            <td><?php
+                $pin= $results->consultant_phone;
+                echo strlen($pin)>8?"No":$pin ?></td>
+            <td>
+                <?php if ($results->status==1)
+                    echo "<div class=\"connected\"> </div>";
+                else
+                    echo "<div class=\"wait\"> </div>";
+                ?>
+            </td>
+            <td>
+                <a href="#">trennen</a>
+            </td>
+        </tr>
+	<?php } ?>
+</table>
+<script>
+    jQuery(document).ready(function ($) {
+        $(".clickable-row").click(function () {
+            let id= $(this).data("id");
+            let row=$(this);
+            let ajaxscript = { ajax_url : '//www.lamoga.de/wp-admin/admin-ajax.php' };
+            $.post(
+                ajaxscript.ajax_url,
+                {
+                    action:"cockpit_disconnect",
+                    id: id
+                },
+                function(res) {
+                    console.log(res);
+                    row.closest("tr").remove();
+                }
+            );
+        });
+    });
+</script>
+<?php
+	return;
+}
+
 
 $sql="SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=".$user_ID;
 $setting = $whatsappdb->get_row($sql);
