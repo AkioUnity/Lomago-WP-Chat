@@ -44,71 +44,13 @@ if (!$user_ID)
 global $whatsappdb;
 global $wa_portal_id;
 
+wp_enqueue_script('jquery-ui-dialog');
+wp_enqueue_style( 'wp-jquery-ui-dialog' );
+
 $sql="SELECT berater_status from pts_useradressen_".$wa_portal_id." WHERE ID=".$user_ID;
 $consultant_status = $whatsappdb->get_row($sql);
 if ($consultant_status->berater_status!='on'){ //customers
-	$sql = "SELECT * FROM LAMOGA_WAF_request_".$wa_portal_id." WHERE user_id=".$user_ID;
-	$result = $whatsappdb->get_results($sql);
-?>
-<h4>Meine aktiven Messenger Sitzungen</h4>
-
-<table id="connectionTable" style="font-size: 18px;font-weight:600 ">
-    <tr>
-        <th>Beratername</th>
-<!--        Start time-->
-<!--        <th>Startzeit</th>-->
-<!--        Request time-->
-        <th>angeforderte Zeit</th>
-<!--        Start messages sent-->
-<!--        <th>Startmessages gesendet</th>-->
-        <th>Messenger</th>
-        <th>Messenger PIN</th>
-<!--        disconnect-->
-        <th>Status</th>
-        <th>Aktion</th>
-    </tr>
-	<?php foreach ($result as $results) { ?>
-        <tr class='clickable-row' data-id='<?php echo $results->id; ?>'>
-            <td class="username1"><?php echo $results->consultant_name ?></td>
-            <td class="time1"><?php echo $results->requested_time ?></td>
-            <td><?php echo $results->type ?></td>
-            <td><?php
-                $pin= $results->consultant_phone;
-                echo strlen($pin)>8?"No":$pin ?></td>
-            <td>
-                <?php if ($results->status==1)
-                    echo "<div class=\"connected\"> </div>";
-                else
-                    echo "<div class=\"wait\"> </div>";
-                ?>
-            </td>
-            <td>
-                <a href="#">trennen</a>
-            </td>
-        </tr>
-	<?php } ?>
-</table>
-<script>
-    jQuery(document).ready(function ($) {
-        $(".clickable-row").click(function () {
-            let id= $(this).data("id");
-            let row=$(this);
-            let ajaxscript = { ajax_url : '//www.lamoga.de/wp-admin/admin-ajax.php' };
-            $.post(
-                ajaxscript.ajax_url,
-                {
-                    action:"cockpit_disconnect",
-                    id: id
-                },
-                function(res) {
-                    console.log(res);
-                    row.closest("tr").remove();
-                }
-            );
-        });
-    });
-</script>
-<?php
+	include "cockpit_customer.php";
 	return;
 }
 
@@ -123,6 +65,7 @@ if (!$setting){
     $setting = $whatsappdb->get_row($sql);
 }
 $sql = "SELECT LAMOGA_WAF_request_".$wa_portal_id.".*,pts_useradressen_".$wa_portal_id.".user_login,pts_useradressen_".$wa_portal_id.".telefon_mobil FROM LAMOGA_WAF_request_".$wa_portal_id." INNER JOIN pts_useradressen_".$wa_portal_id." on LAMOGA_WAF_request_".$wa_portal_id.".user_id=pts_useradressen_".$wa_portal_id.".ID WHERE status>-1  and customer_phone!='null' and consultant_id=".$user_ID." ORDER BY LAMOGA_WAF_request_".$wa_portal_id.".requested_time";
+//echo $sql;
 $result = $whatsappdb->get_results($sql);
 
 $sql="SELECT text from auto_messages_".$wa_portal_id." WHERE name='activate'";
@@ -231,8 +174,8 @@ $activeMessages = $whatsappdb->get_results($sql);
                         message=message.replace('$consultant',consultant);
                         message="&text=" + encodeURI(message);
                         url=url+message;
-                        let type="&type="+$(this).data("type");
-                        url=url+type;
+                        let type=$(this).data("type");
+                        url=url+"&type="+type;
                         $.ajax({
                             url: url,
                             type: "GET",
@@ -249,7 +192,8 @@ $activeMessages = $whatsappdb->get_results($sql);
                             ajaxscript.ajax_url,
                             {
                                 action:"cockpit_connect",
-                                user_id:user_id
+                                user_id:user_id,
+                                type:type
                             },
                             function(res) {
                                 console.log(res);

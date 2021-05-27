@@ -87,7 +87,7 @@ function cockpit_connect()
     $user_id = $_POST['user_id'];
     global $whatsappdb;
     global $wa_portal_id;
-    $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET status='1' WHERE user_id=" . $user_id;
+    $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET status='1' WHERE user_id=" . $user_id." and type=".$_POST['type'];
     $result = wp_send_json($whatsappdb->get_results($sql));
     echo $result;
     die(); // this is required to terminate immediately and return a proper response
