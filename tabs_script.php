@@ -1,3 +1,7 @@
+<!--include "wp-content/plugins/whatsapp-payment/tabs_pro.php";-->
+<!--include "wp-content/plugins/whatsapp-payment/whatsapp_tab.php";-->
+<!--Messenger-TAB-4-script-->
+<!--https://www.lamoga.de/popup_chatten_02/?fl_builder-->
 <?php
 global $pts_settings0;
 ?>
@@ -54,7 +58,3 @@ global $pts_settings0;
     }
 </style>
 
-
-<!--include "wp-content/plugins/whatsapp-payment/tabs_pro.php";-->
-<!--include "wp-content/plugins/whatsapp-payment/whatsapp_tab.php";-->
-<!--Messenger-TAB-4-script-->

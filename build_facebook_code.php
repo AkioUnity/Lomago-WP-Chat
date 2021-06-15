@@ -4,4 +4,4 @@ if ($user_ID == 0)
     $facebookapp_code .= " class='button_disabled'";
 else
     $facebookapp_code .= "class='whatsapp-button' onclick=\"call_facebook(" . $agentresult->ID . ",'" . $agentresult->bezeichnung . "','" . $agentresult->sbid . "','" . $agentresult->mobilenumber_1 . "')\" ";
-$facebookapp_code .= "width=\"30\"></h4>";
+$facebookapp_code .= "width=\"30\"> ab  ".$agentresult->chatpreis_2."  €</h4>";

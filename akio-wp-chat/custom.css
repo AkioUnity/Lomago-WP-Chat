@@ -90,3 +90,9 @@
     transform-origin: 0 0; /* see note above */
 }
 .ldio-lz3n57tppmn div { box-sizing: content-box; }
+
+hr.chat{
+    border-top: 10px solid #eee;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}

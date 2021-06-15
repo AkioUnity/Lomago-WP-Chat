@@ -1,15 +1,5 @@
-<table class="widefat">
-    <tbody>
-    <tr>
-        <td id="xyz_ips_vAlign"> </td>
-        <td id="xyz_ips_vAlign">[xyz-ips snippet="Messenger-TAB-4-all"]</td>
-    </tr>
-    </tbody>
-</table>
+[xyz-ips snippet="Messenger-TAB-4-all"]
 <div class="chat_info" style="padding-left: 10px">
-    <!--    Kontostand: *KONTOSTAND*-->
-    <!--    <br>-->
-    <!--    Status:*BERATERSTATUS*-->
     <p>*WHATSAPP*</p>
     <p>[xyz-ips snippet="Messenger-TAB-Whatsapp"]</p>
     <p>&nbsp;</p>
