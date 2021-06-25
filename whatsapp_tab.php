@@ -1,5 +1,6 @@
 <script>
-    function call_whatsapp(id, name,sbid,mobilenumber_1,price) { alert ("CREDIT "+kontostand+ "  STATUS ");
+    function call_whatsapp(id, name,sbid,mobilenumber_1,price) {
+        // alert ("CREDIT "+kontostand+ "  STATUS ");
         console.log("whatsapp " + id + ":" + name);
         jQuery(".whatsapp_loading").show();
         let ajax_url ="<?php echo admin_url('admin-ajax.php'); ?>";

@@ -38,6 +38,12 @@
         text-decoration: none;
         cursor: pointer;
     }
+
+    table, th, td {
+        border: 2px solid #e0dede;
+        border-collapse: collapse;
+        padding: 3px;
+    }
 </style>
 
 <!-- The Modal -->
@@ -84,8 +90,8 @@ $result = $whatsappdb->get_results($sql);
         <!--        Start time-->
         <!--        <th>Startzeit</th>-->
         <!--        Request time-->
-        <th>angeforderte Zeit</th>
-        <!--        Start messages sent-->
+        <th>Anfrage Zeitpunkt</th>
+        <!--        Request time-->
         <!--        <th>Startmessages gesendet</th>-->
         <th>Messenger</th>
         <th>Messenger PIN</th>
@@ -112,7 +118,7 @@ $result = $whatsappdb->get_results($sql);
 	    ?>
         <tr class='clickable-row1' data-id='<?php echo $results->id; ?>'>
             <td class="username1"><?php echo $results->consultant_name ?></td>
-            <td class="time1"><?php echo $results->requested_time ?></td>
+            <td class="time1"><?php echo date_format(date_create($results->requested_time),'d.m.y / H:i:s'); ?></td>
             <td><?php echo $results->type ?></td>
             <td><?php
 				echo strlen($pin)>8?"No":$pin ?></td>
