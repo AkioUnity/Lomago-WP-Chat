@@ -1,3 +1,6 @@
+<!--Messenger-TAB-facebook-->
+<!--include "wp-content/plugins/whatsapp-payment/facebook_tab.php";-->
+
 <p class='facebook_message'></p>
 <a class='facebook_messenger' href="http://m.me/106704524351660/" style='display: none' target="_blank">
     facebook messenger

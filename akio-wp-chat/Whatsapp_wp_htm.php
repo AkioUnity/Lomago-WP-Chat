@@ -17,4 +17,4 @@
         </div>
     </div>
 </div>
-[xyz-ips snippet = "Messenger-TAB-4-script"]
+<!--[xyz-ips snippet = "Messenger-TAB-4-script"]-->
