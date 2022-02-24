@@ -107,7 +107,7 @@ $result = $whatsappdb->get_results($sql);
 		$reply_row = $whatsappdb->get_row($sql);
 		$message = $reply_row->text;
 
-		$sql = "SELECT user_login,telefon_mobil,vorwahl_1,rufnummer_3,telegram_id from pts_useradressen_".$wa_portal_id." where ID=" . $user_ID;
+		$sql = "SELECT user_login,telefon_mobil,vorwahl_3,rufnummer_3,telegram_id from pts_useradressen_".$wa_portal_id." where ID=" . $user_ID;
 		$row = $whatsappdb->get_row($sql);
 		$username = $row->user_login;
 

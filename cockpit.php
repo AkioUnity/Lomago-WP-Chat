@@ -139,7 +139,7 @@ echo "wa_price:".$agent_whatsapp_price;
                         if (item.status==1){
                             status='connect'
                         }
-                        let phone=item.vorwahl_1+item.rufnummer_3;
+                        let phone=item.vorwahl_3+item.rufnummer_3;
                         let image_url='pts_bilderupload/whatsapp.png';
                         if (item.type=='facebook')
                             image_url='wp-content/uploads/2019/04/facebook.png';

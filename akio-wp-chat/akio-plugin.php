@@ -60,7 +60,7 @@ function cockpit_action()
     $whatsappdb->query($sql);
     $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET status=-1 WHERE requested_time < (NOW() - INTERVAL " . $wait_minute . " MINUTE);";
     $deleteRes = $whatsappdb->query($sql);
-    $sql = "SELECT LAMOGA_WAF_request_".$wa_portal_id.".*,pts_useradressen_".$wa_portal_id.".user_login,pts_useradressen_".$wa_portal_id.".telefon_mobil,pts_useradressen_".$wa_portal_id.".vorwahl_1,pts_useradressen_".$wa_portal_id.".rufnummer_3 FROM LAMOGA_WAF_request_".$wa_portal_id." INNER JOIN pts_useradressen_".$wa_portal_id." on LAMOGA_WAF_request_".$wa_portal_id.".user_id=pts_useradressen_".$wa_portal_id.".ID WHERE status>-1 and customer_phone!='null' and consultant_id=" . $userinfo->ID . " ORDER BY LAMOGA_WAF_request_".$wa_portal_id.".requested_time";
+    $sql = "SELECT LAMOGA_WAF_request_".$wa_portal_id.".*,pts_useradressen_".$wa_portal_id.".user_login,pts_useradressen_".$wa_portal_id.".telefon_mobil,pts_useradressen_".$wa_portal_id.".vorwahl_3,pts_useradressen_".$wa_portal_id.".rufnummer_3 FROM LAMOGA_WAF_request_".$wa_portal_id." INNER JOIN pts_useradressen_".$wa_portal_id." on LAMOGA_WAF_request_".$wa_portal_id.".user_id=pts_useradressen_".$wa_portal_id.".ID WHERE status>-1 and customer_phone!='null' and consultant_id=" . $userinfo->ID . " ORDER BY LAMOGA_WAF_request_".$wa_portal_id.".requested_time";
     $result = $whatsappdb->get_results($sql);
     echo wp_send_json($result);
     die(); // this is required to terminate immediately and return a proper response
@@ -135,7 +135,7 @@ function whatsapp_request()
     }
 
 
-    $sql = "SELECT user_login,telefon_mobil,vorwahl_1,rufnummer_3,telegram_id from pts_useradressen_".$wa_portal_id." where ID=" . $user_ID;
+    $sql = "SELECT user_login,telefon_mobil,vorwahl_3,rufnummer_3,telegram_id from pts_useradressen_".$wa_portal_id." where ID=" . $user_ID;
     $row = $whatsappdb->get_row($sql);
     $username = $row->user_login;
 
@@ -146,11 +146,11 @@ function whatsapp_request()
     $message = str_replace('$customer', $username, $message);
     $message = str_replace('$consultant', $consultant_name, $message);
 
-    $phone = $row->vorwahl_1 . $row->rufnummer_3;
+    $phone = $row->vorwahl_3 . $row->rufnummer_3;
     $data = array("username" => $username, 'to' => $phone, 'user_id' => $user_ID);
-//    $sql = "SELECT vorwahl_1,rufnummer_1 from pts_useradressen where ID=" . $consultant_id;
+//    $sql = "SELECT vorwahl_3,rufnummer_1 from pts_useradressen where ID=" . $consultant_id;
 //    $row = $whatsappdb->get_row($sql);
-//    $consultant_phone=$row->vorwahl_1 . $row->rufnummer_1;
+//    $consultant_phone=$row->vorwahl_3 . $row->rufnummer_1;
     $consultant_phone = $mobilenumber_1;
     $digits = 6;
     if ($type == 'facebook') {
