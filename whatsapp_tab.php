@@ -19,7 +19,7 @@
                 if (!res.error){
                     res.data.step = 1;
                     res.data.price=price;
-                    call_bot(res.data);
+                    // call_bot(res.data);
                 }
                 jQuery(".whatsapp_loading").hide();
             });

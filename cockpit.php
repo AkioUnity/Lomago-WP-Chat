@@ -43,6 +43,7 @@ if (!$user_ID)
 
 global $whatsappdb;
 global $wa_portal_id;
+global $agentresult;
 
 wp_enqueue_script('jquery-ui-dialog');
 wp_enqueue_style( 'wp-jquery-ui-dialog' );
@@ -70,6 +71,11 @@ $result = $whatsappdb->get_results($sql);
 
 $sql="SELECT text from auto_messages_".$wa_portal_id." WHERE name='activate'";
 $activeMessages = $whatsappdb->get_results($sql);
+
+$sql0="SELECT text from auto_messages_".$wa_portal_id." WHERE name='whatsapp_price'";
+$whatsapp_message = $whatsappdb->get_results($sql0);
+$agent_whatsapp_price=$agentresult->chatpreis_1;
+echo "wa_price:".$agent_whatsapp_price;
 ?>
 
 <div class="setting" style="font-size: 20px">
@@ -162,11 +168,13 @@ $activeMessages = $whatsappdb->get_results($sql);
                         if ($(this).data("type")==='whatsapp'){
                             let phone = $(this).data("phone");
                             let consultant_phone = '8562092175213';
-                            console.log(username);
-                            let base_url = 'https://www.waboxapp.com/api/send/chat?';
-                            let token = "51ed0669bea9c01cf3cf2144cd0049975c7a994025fa9";
-                            url = base_url + "token=" + token + "&uid=" + consultant_phone + "&to=" + phone + "&custom_uid=" + Date.now();
-                            message=<?php echo json_encode($activeMessages[0]->text) ?>;
+                            console.log("Whatsapp clicked:"+username);
+                            // let base_url = 'https://www.waboxapp.com/api/send/chat?';
+                            // let token = "51ed0669bea9c01cf3cf2144cd0049975c7a994025fa9";
+                            // url = base_url + "token=" + token + "&uid=" + consultant_phone + "&to=" + phone + "&custom_uid=" + Date.now();
+                            let base_url = 'https://admin.lomago.io/api/whatsapp/sendMessage';
+                            url = base_url + "?phone=" + phone ;
+                            setTimeout(function(){WhatsappBlock3Message(url)}, 3000);
                         }
 
                         message=message.replace('$customer',username);
@@ -176,18 +184,22 @@ $activeMessages = $whatsappdb->get_results($sql);
                         url=url+message;
                         let type=$(this).data("type");
                         url=url+"&type="+type;
-                        $.ajax({
-                            url: url,
-                            type: "GET",
-                            crossDomain: true,
-                            dataType: 'jsonp',
-                            headers: {'Access-Control-Allow-Origin': '*'},
-                            // beforeSend: function(xhr){xhr.setRequestHeader('X-Test-Header', 'test-value');},
-                            success: function (data) {
-                                // $( ".result" ).html( data );
-                                // console.log(message);
-                            }
-                        });
+                        jQuery.get(url,
+                            function (response) {
+                                console.log(response);
+                            });
+                        // $.ajax({
+                        //     url: url,
+                        //     type: "GET",
+                        //     crossDomain: true,
+                        //     dataType: 'jsonp',
+                        //     headers: {'Access-Control-Allow-Origin': '*'},
+                        //     // beforeSend: function(xhr){xhr.setRequestHeader('X-Test-Header', 'test-value');},
+                        //     success: function (data) {
+                        //         // $( ".result" ).html( data );
+                        //         console.log(message);
+                        //     }
+                        // });
                         $.post(
                             ajaxscript.ajax_url,
                             {
@@ -207,6 +219,19 @@ $activeMessages = $whatsappdb->get_results($sql);
         var interval = 1000 * 3;
         ajax_call();
         setInterval(ajax_call, interval);
+
+        function WhatsappBlock3Message(url) {
+            let message=<?php echo json_encode($whatsapp_message[0]->text) ?>;
+            let agent_whatsapp_price=<?php echo $agent_whatsapp_price ?>;
+            message=message.replace('$wa_price',agent_whatsapp_price);
+
+            message="&text=" + encodeURI(message);
+            url=url+message;
+            jQuery.get(url,
+                function (response) {
+                    console.log(response);
+                });
+        }
     });
 
 </script>
