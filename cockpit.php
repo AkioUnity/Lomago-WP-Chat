@@ -65,17 +65,21 @@ if (!$setting){
     $sql="SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=".$user_ID;
     $setting = $whatsappdb->get_row($sql);
 }
-$sql = "SELECT LAMOGA_WAF_request_".$wa_portal_id.".*,pts_useradressen_".$wa_portal_id.".user_login,pts_useradressen_".$wa_portal_id.".telefon_mobil FROM LAMOGA_WAF_request_".$wa_portal_id." INNER JOIN pts_useradressen_".$wa_portal_id." on LAMOGA_WAF_request_".$wa_portal_id.".user_id=pts_useradressen_".$wa_portal_id.".ID WHERE status>-1  and customer_phone!='null' and consultant_id=".$user_ID." ORDER BY LAMOGA_WAF_request_".$wa_portal_id.".requested_time";
-//echo $sql;
+$sql = "SELECT LAMOGA_WAF_request_".$wa_portal_id.".*,pts_useradressen_".$wa_portal_id.".user_login,pts_useradressen_".$wa_portal_id.".telefon_mobil,pts_useradressen_".$wa_portal_id.".vorwahl_3,pts_useradressen_".$wa_portal_id.".rufnummer_3 FROM LAMOGA_WAF_request_".$wa_portal_id." INNER JOIN pts_useradressen_".$wa_portal_id." on LAMOGA_WAF_request_".$wa_portal_id.".user_id=pts_useradressen_".$wa_portal_id.".ID WHERE status>-1  and customer_phone!='null' and consultant_id=".$user_ID." ORDER BY LAMOGA_WAF_request_".$wa_portal_id.".requested_time";
+
 $result = $whatsappdb->get_results($sql);
 
 $sql="SELECT text from auto_messages_".$wa_portal_id." WHERE name='activate'";
 $activeMessages = $whatsappdb->get_results($sql);
 
-$sql0="SELECT text from auto_messages_".$wa_portal_id." WHERE name='whatsapp_price'";
-$whatsapp_message = $whatsappdb->get_results($sql0);
-$agent_whatsapp_price=$agentresult->chatpreis_1;
-echo "wa_price:".$agent_whatsapp_price;
+$sql="SELECT text from auto_messages_".$wa_portal_id." WHERE name='whatsapp_price'";
+$whatsapp_message = $whatsappdb->get_results($sql);
+
+$sql="SELECT chatpreis_1 from pts_berater_profile_".$wa_portal_id." WHERE ID=".$user_ID;
+$consultant_price = $whatsappdb->get_row($sql);
+
+$agent_whatsapp_price=$consultant_price->chatpreis_1;
+echo "Whatsapp price:".$agent_whatsapp_price;
 ?>
 
 <div class="setting" style="font-size: 20px">
