@@ -56,10 +56,10 @@ function cockpit_action()
     global $whatsappdb;
     global $wa_portal_id;
     $userinfo = wp_get_current_user();
-    $sql = "UPDATE cockpit_settings_".$wa_portal_id." SET offline=" . $offline . ",wait_minute=" . $wait_minute . " WHERE consultant_id=" . $userinfo->ID;
-    $whatsappdb->query($sql);
-    $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET status=-1 WHERE requested_time < (NOW() - INTERVAL " . $wait_minute . " MINUTE);";
-    $deleteRes = $whatsappdb->query($sql);
+//    $sql = "UPDATE cockpit_settings_".$wa_portal_id." SET offline=" . $offline . ",wait_minute=" . $wait_minute . " WHERE consultant_id=" . $userinfo->ID;
+//    $whatsappdb->query($sql);
+//    $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET status=-1 WHERE requested_time < (NOW() - INTERVAL " . $wait_minute . " MINUTE);";
+//    $deleteRes = $whatsappdb->query($sql);
     $sql = "SELECT LAMOGA_WAF_request_".$wa_portal_id.".*,pts_useradressen_".$wa_portal_id.".user_login,pts_useradressen_".$wa_portal_id.".telefon_mobil,pts_useradressen_".$wa_portal_id.".vorwahl_3,pts_useradressen_".$wa_portal_id.".rufnummer_3 FROM LAMOGA_WAF_request_".$wa_portal_id." INNER JOIN pts_useradressen_".$wa_portal_id." on LAMOGA_WAF_request_".$wa_portal_id.".user_id=pts_useradressen_".$wa_portal_id.".ID WHERE status>-1 and customer_phone!='null' and consultant_id=" . $userinfo->ID . " ORDER BY LAMOGA_WAF_request_".$wa_portal_id.".requested_time";
     $result = $whatsappdb->get_results($sql);
     echo wp_send_json($result);
