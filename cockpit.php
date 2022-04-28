@@ -56,15 +56,15 @@ if ($consultant_status->berater_status!='on'){ //customers
 }
 
 
-$sql="SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=".$user_ID;
-$setting = $whatsappdb->get_row($sql);
+//$sql="SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=".$user_ID;
+//$setting = $whatsappdb->get_row($sql);
 
-if (!$setting){
-    $sql = "INSERT INTO cockpit_settings_".$wa_portal_id." (consultant_id) VALUES (" . $user_ID . ")";
-    $whatsappdb->query($sql);
-    $sql="SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=".$user_ID;
-    $setting = $whatsappdb->get_row($sql);
-}
+//if (!$setting){
+//    $sql = "INSERT INTO cockpit_settings_".$wa_portal_id." (consultant_id) VALUES (" . $user_ID . ")";
+//    $whatsappdb->query($sql);
+//    $sql="SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=".$user_ID;
+//    $setting = $whatsappdb->get_row($sql);
+//}
 $sql = "SELECT LAMOGA_WAF_request_".$wa_portal_id.".*,pts_useradressen_".$wa_portal_id.".user_login,pts_useradressen_".$wa_portal_id.".telefon_mobil,pts_useradressen_".$wa_portal_id.".vorwahl_3,pts_useradressen_".$wa_portal_id.".rufnummer_3 FROM LAMOGA_WAF_request_".$wa_portal_id." INNER JOIN pts_useradressen_".$wa_portal_id." on LAMOGA_WAF_request_".$wa_portal_id.".user_id=pts_useradressen_".$wa_portal_id.".ID WHERE status>-1  and customer_phone!='null' and consultant_id=".$user_ID." ORDER BY LAMOGA_WAF_request_".$wa_portal_id.".requested_time";
 
 $result = $whatsappdb->get_results($sql);
@@ -82,13 +82,13 @@ $agent_whatsapp_price=$consultant_price->chatpreis_1;
 echo "Whatsapp price:".$agent_whatsapp_price;
 ?>
 
-<div class="setting" style="font-size: 20px">
-    <label style="font-weight: 600">Einstellungen :  </label><label style="margin-left: 10px"> Kunde sofort ausblenden wenn offline </label>
-    <label for="check_offline"></label>
-    <input type="checkbox" id="check_offline" <?php echo ($setting->offline==1 ? 'checked' : '');?> style="margin: auto">
-    <label style="margin-left: 30px">       oder nach: </label>
-    <input type="number" value="<?php echo $setting->wait_minute; ?>" style="width: 90px; height: 28px;" id="after_minutes"> Minuten
-</div>
+<!--<div class="setting" style="font-size: 20px">-->
+<!--    <label style="font-weight: 600">Einstellungen :  </label><label style="margin-left: 10px"> Kunde sofort ausblenden wenn offline </label>-->
+<!--    <label for="check_offline"></label>-->
+<!--    <input type="checkbox" id="check_offline" --><?php //echo ($setting->offline==1 ? 'checked' : '');?><!-- style="margin: auto">-->
+<!--    <label style="margin-left: 30px">       oder nach: </label>-->
+<!--    <input type="number" value="--><?php //echo $setting->wait_minute; ?><!--" style="width: 90px; height: 28px;" id="after_minutes"> Minuten-->
+<!--</div>-->
 
 <h4>Kunden Anfragen</h4>
 
@@ -170,6 +170,7 @@ echo "Whatsapp price:".$agent_whatsapp_price;
                         let url='https://www.lomago.io:1337/send?page_id='+$(this).data("page_id");
                         let message=<?php echo json_encode($activeMessages[0]->text) ?>;
                         if ($(this).data("type")==='whatsapp'){
+                            message=<?php echo json_encode($activeMessages[1]->text) ?>;
                             let phone = $(this).data("phone");
                             let consultant_phone = '8562092175213';
                             console.log("Whatsapp clicked:"+username);

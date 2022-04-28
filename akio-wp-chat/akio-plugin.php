@@ -27,21 +27,20 @@ along with (Plugin Name). If not, see (http://link to your plugin license).
 //-------- my code--------akio
 function users_last_login()
 {
-//    $cur_login = current_time(timestamp, 0);
-    $userinfo = wp_get_current_user();
-    global $whatsappdb;
-    global $wa_portal_id;
-    $sql = "SELECT consultant_id from LAMOGA_WAF_request_".$wa_portal_id." WHERE status>-1 and user_id=" . $userinfo->ID;
-    $results = $whatsappdb->get_results($sql);
-    foreach ($results as $result) {
-        $consultant_id = $result->consultant_id;
-        $sql = "SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=" . $consultant_id;
-        $setting = $whatsappdb->get_row($sql);
-        if ($setting && $setting->offline == 1) {
-            $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET status=-1 WHERE user_id=" . $userinfo->ID . " and consultant_id=" . $consultant_id;
-            $whatsappdb->query($sql);
-        }
-    }
+//    $userinfo = wp_get_current_user();
+//    global $whatsappdb;
+//    global $wa_portal_id;
+//    $sql = "SELECT consultant_id from LAMOGA_WAF_request_".$wa_portal_id." WHERE status>-1 and user_id=" . $userinfo->ID;
+//    $results = $whatsappdb->get_results($sql);
+//    foreach ($results as $result) {
+//        $consultant_id = $result->consultant_id;
+//        $sql = "SELECT * from cockpit_settings_".$wa_portal_id." WHERE consultant_id=" . $consultant_id;
+//        $setting = $whatsappdb->get_row($sql);
+//        if ($setting && $setting->offline == 1) {
+//            $sql = "UPDATE LAMOGA_WAF_request_".$wa_portal_id." SET status=-1 WHERE user_id=" . $userinfo->ID . " and consultant_id=" . $consultant_id;
+//            $whatsappdb->query($sql);
+//        }
+//    }
 }
 
 add_action('clear_auth_cookie', 'users_last_login');
