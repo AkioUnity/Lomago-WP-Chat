@@ -77,11 +77,12 @@ $whatsapp_message = $whatsappdb->get_results($sql);
 
 $sql="SELECT chatpreis_1 from pts_berater_profile_".$wa_portal_id." WHERE ID=".$user_ID;
 $consultant_price = $whatsappdb->get_row($sql);
-
 $agent_whatsapp_price=$consultant_price->chatpreis_1;
-echo "Whatsapp price:".$agent_whatsapp_price;
-?>
 
+$sql="SELECT pin_code from telegram_contacts WHERE user_id=".$user_ID;
+$pin_code = $whatsappdb->get_row($sql)->pin_code;
+?>
+<h4>Mein Telegram Info PIN : <label style="color: black"><?php echo $pin_code ?> </label></h4>
 <!--<div class="setting" style="font-size: 20px">-->
 <!--    <label style="font-weight: 600">Einstellungen :  </label><label style="margin-left: 10px"> Kunde sofort ausblenden wenn offline </label>-->
 <!--    <label for="check_offline"></label>-->
@@ -168,7 +169,9 @@ echo "Whatsapp price:".$agent_whatsapp_price;
                         let consultant = $(this).data("consultant");
                         let username = $(this).data("username");
                         let url='https://www.lomago.io:1337/send?page_id='+$(this).data("page_id");
-                        let message=<?php echo json_encode($activeMessages[0]->text) ?>;
+                        let message=<?php echo json_encode($activeMessages[0]->text) ?>;  //facebook
+                        if ($(this).data("type")==='telegram')
+                            message=<?php echo json_encode($activeMessages[2]->text) ?>;
                         if ($(this).data("type")==='whatsapp'){
                             message=<?php echo json_encode($activeMessages[1]->text) ?>;
                             let phone = $(this).data("phone");
